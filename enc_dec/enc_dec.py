@@ -8,9 +8,10 @@ import collections
 from torch.nn import functional as F
 from data_processing import data
 import logging 
+import math 
 
 import time 
-log_dir = 'machine_translation/log'
+log_dir = 'log'
 os.makedirs(log_dir, exist_ok= True)
 log_file = os.path.join(log_dir, f"training_deu_eng.log")
 logging.basicConfig(level=logging.INFO, 
@@ -26,12 +27,13 @@ class Trainer:
                   max_epochs= 10, grad_clip_val =0.0,  
                   device = 'cpu', num_gpus = 2): 
         self.model = model
-        self.trainer_loader = train_loader 
+        self.train_loader = train_loader 
         self.val_loader = val_loader
         self.optimizer = optimizer
         self.max_epochs = max_epochs
         self.gradient_clip_val  = grad_clip_val
         self.device = device
+        self.filepath = None
         self.num_gpus = num_gpus
 
         if self.num_gpus > 0:
@@ -55,9 +57,9 @@ class Trainer:
         total_loss = 0
         logger.info(f"Starting epoch {epoch}/{self.max_epochs}")\
         
-        batch_count = len(self.trainer_loader)
+        batch_count = len(self.train_loader)
 
-        for batch_idx, batch in enumerate(self.trainer_loader):
+        for batch_idx, batch in enumerate(self.train_loader):
             src_array, tgt_array, src_valid_len, label_array = batch
             src_array = src_array.to(self.device)
             tgt_array = tgt_array.to(self.device)
@@ -67,6 +69,7 @@ class Trainer:
             self.optimizer.zero_grad()
             outputs = self.model(src_array, tgt_array)  # Use target array for decoder input
             loss = self.model.loss(outputs, label_array)# compute backward gradients 
+            loss.backward()
             if self.gradient_clip_val > 0:
                 # calculate the sum norm of params 
                 #if norm >grad_clip_valu 
@@ -79,18 +82,22 @@ class Trainer:
                logger.info(f"Epoch {epoch}: {batch_idx}/{batch_count} batches processed. Current loss: {loss.item():.4f}")
     
     
-        avg_loss = total_loss / len(self.trainer_loader)
+        avg_loss = total_loss / len(self.train_loader)
         logger.info(f"Epoch {epoch} completed. Average training loss: {avg_loss:.4f}")
         return avg_loss
     def validate(self):
         self.model.eval()
         total_loss = 0
         with torch.no_grad():
-             for x, y in self.val_loader:  # Unpack directly as x, y
-                x, y = x.to(self.device), y.to(self.device)
-                outputs = self.model(x)
-                loss = self.model.loss(outputs, y)
-                total_loss += loss.item()
+             for batch_idx, batch in enumerate(self.train_loader):
+                src_array, tgt_array, src_valid_len, label_array = batch
+                src_array = src_array.to(self.device)
+                tgt_array = tgt_array.to(self.device)
+                src_valid_len = src_valid_len.to(self.device)
+                label_array = label_array.to(self.device)
+                outputs = self.model(src_array, tgt_array)  # Use target array for decoder input
+                val_loss = self.model.loss(outputs, label_array)# compute backward gradients 
+                total_loss += val_loss.item()
         val_loss = total_loss / len(self.val_loader)
         logger.info(f"Validation  Loss: {val_loss:.4f} ")
         return val_loss
@@ -100,7 +107,7 @@ class Trainer:
         logger.info("=" * 50)
         logger.info(f"Starting training for {self.max_epochs} epochs")
         logger.info(f"Training on device: {self.device}")
-        logger.info(f"Training set size: {len(self.trainer_loader.dataset)} examples")
+        logger.info(f"Training set size: {len(self.train_loader.dataset)} examples")
         if self.val_loader:
             logger.info(f"Validation set size: {len(self.val_loader.dataset)} examples")
         logger.info("=" * 50)
@@ -108,7 +115,8 @@ class Trainer:
         best_val_loss = float('inf')
         train_losses = []
         val_losses = []
-        
+        save_dir = os.path.join('saved_models')
+        os.makedirs(save_dir, exist_ok=True)
         for epoch in range(1, self.max_epochs+1):
             # Log epoch start
             logger.info(f"Epoch {epoch}/{self.max_epochs} started")
@@ -129,7 +137,8 @@ class Trainer:
                     improvement = best_val_loss - val_loss
                     best_val_loss = val_loss
                     logger.info(f"Validation loss improved by {improvement:.4f}. New best: {best_val_loss:.4f}")
-                
+                    self.save_parameters()
+            
                 logger.info(f"Epoch {epoch}/{self.max_epochs} completed in {epoch_time:.1f}s - "
                          f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}")
             else:
@@ -138,11 +147,46 @@ class Trainer:
         
         # Log training summary
         logger.info("=" * 50)
+        final_save_path = self.save_parameters()
         logger.info(f"Training completed after {self.max_epochs} epochs")
         if self.val_loader:
             logger.info(f"Best validation loss: {best_val_loss:.4f}")
         logger.info("=" * 50)
     
+    def save_parameters(self ):
+        path = 'saved_models'
+        os.makedirs(path, exist_ok=True)
+        model_to_save = self.model.module if hasattr(self.model, 'module') else self.model
+        save_dict  = {
+        'model_state_dict': model_to_save.state_dict(),
+        'optimizer_state_dict': self.optimizer.state_dict(),
+        # Add any other metadata you want to save
+        'embedding_size': model_to_save.encoder.embedding.embedding_dim,
+        'num_hiddens': model_to_save.encoder.rnn.hidden_size,
+        'num_layers': model_to_save.encoder.rnn.num_layers,
+        'dropout': model_to_save.encoder.rnn.dropout,
+        'src_vocab_size': len(model_to_save.encoder.embedding.weight),
+        'tgt_vocab_size': len(model_to_save.decoder.embedding.weight),
+        'learning_rate': model_to_save.lr
+        }
+        filename = 'model_params.pt'
+        filepath = os.path.join(path, filename)
+        torch.save(save_dict, filepath)
+        logger.info(f"Model parameters saved to {filepath}")
+        self.filepath = filepath
+        return filepath
+    
+    def load_parameters (self,filepath, model, optimizer =None):
+        
+        save_dict = torch.load(filepath, map_location=torch.device('cpu'))
+        model_to_load = model.module if hasattr(model, 'module') else model
+        model_to_load.load_state_dict(save_dict['model_state_dict'])
+        if optimizer is not None and 'optimizer_state_dict' in save_dict:
+            optimizer.load_state_dict(save_dict['optimizer_state_dict'])
+        metadata = {k: v for k, v in save_dict.items() 
+                if k not in ['model_state_dict', 'optimizer_state_dict']}
+        return metadata
+
 
 
 class Encoder(nn.Module):
@@ -175,6 +219,22 @@ class EncoderDecoder(nn.Module):
         enc_all_outputs = self.encoder(enc_x, *args)
         dec_state = self.decoder.init_state(enc_all_outputs,*args)
         return self.decoder(dec_x, dec_state)[0]
+    
+    def predict_step(self, batch, device, num_steps,
+        save_attention_weights =False):
+        batch = [a.to(device) for a in batch]
+        src, tgt, src_valid_len, _ = batch
+        enc_all_outputs = self.encoder(src, src_valid_len)
+        dec_state = self.decoder.init_state(enc_all_outputs, src_valid_len)
+        outputs, attention_weights = [tgt[:, (0)].unsqueeze(1), ], []
+        for _ in range(num_steps):
+            Y, dec_state = self.decoder(outputs[-1], dec_state)
+            outputs.append(Y.argmax(2))
+            # Save attention weights (to be covered later)
+            if save_attention_weights:
+                attention_weights.append(self.decoder.attention_weights)
+        return torch.cat(outputs[1:], 1), attention_weights
+
     
 # the encoded C should be concated with
 #    the decoders input at all tims steps 
@@ -229,7 +289,7 @@ class Seq2Seq (EncoderDecoder):
         self.lr = lr
 
     def configure_optimization(self):
-        return torch.optim.Adam(self.parameters(), lr=self.lr)
+        return torch.optim.Adam(self.parameters(), lr=self.lr,weight_decay=0.2)
     def loss (self, y_hat, y):
      
     
@@ -244,14 +304,27 @@ class Seq2Seq (EncoderDecoder):
      
         mask = (y.reshape(-1) != self.tgt_pad).float()
         return (l * mask).sum() / mask.sum()
-    
+def bleu(pred_seq, label_seq, k):
+    pred_tokens, label_tokens, = pred_seq.split(' '), label_seq.split(' ')
+    len_pred, len_label = len(pred_tokens), len(label_tokens)
+    score = math.exp(min(0,1-len_label/len_label)) 
+    for n in range(1, min(k, len_pred) + 1):
+        num_matches, label_subs = 0, collections.defaultdict(int)
+        for i in range(len_label - n + 1):
+            label_subs[' '.join(label_tokens[i: i + n])] += 1
+        for i in range(len_pred - n + 1):
+            if label_subs[' '.join(pred_tokens[i: i + n])] > 0:
+                num_matches += 1
+                label_subs[' '.join(pred_tokens[i: i + n])] -= 1
+        score *= math.pow(num_matches / (len_pred - n + 1), math.pow(0.5, n))
+    return score
 
 data = data.MTDeuEng(batch_size=128)
 
 train_loader = data.get_dataloader(train = True)
 val_loader = data.get_dataloader(train=False)
 
-embed_size, num_hiddens, num_layers, dropout = 256, 256, 2, 0.2
+embed_size, num_hiddens, num_layers, dropout = 256, 256, 5, 0.2
 
 encoder = Seq2SeqEncoder(
     len(data.src_vocab), embed_size, num_hiddens, num_layers, dropout)
@@ -260,7 +333,7 @@ decoder = Seq2SeqDecoder(
     len(data.tgt_vocab), embed_size, num_hiddens, num_layers, dropout)
 
 model = Seq2Seq(encoder, decoder, tgt_pad=data.tgt_vocab['<pad>'],
-                lr=0.005)
+                lr=0.006)
 
 logger.info("=" * 70)
 logger.info("TRAINING CONFIGURATION")
@@ -271,13 +344,37 @@ logger.info(f"Layers: {num_layers}, Dropout: {dropout}")
 logger.info(f"Batch size: {data.batch_size}")
 logger.info(f"Learning rate: {model.lr}")
 logger.info("=" * 70)
+
+
 opt = model.configure_optimization()
-trainer = Trainer(model,train_loader=train_loader, max_epochs=30, 
+trainer = Trainer(model,train_loader=train_loader,val_loader = val_loader, max_epochs=60, 
                   grad_clip_val=1, num_gpus=2, optimizer=opt)
 
 
-# 10. Make sure to log when starting the actual training
 logger.info("Starting model training...")
-
 trainer.fit()
 logger.info("Training completed!")
+
+
+engs = ['Go.','Hi.','Hi.','Run!','Run.','Wow!','Wow!','Duck!',''
+'Fire!','Help!','Help!','Hide.','Hide.','Stay.','Stop!','Stop!','Wait!',''
+'Wait.','Begin.','Do it','Do it','Go on','Hello!']
+
+
+deu = ['Geh.','Hallo!','Grüß Gott!','Lauf!','Lauf!'
+        	 , 'Potzdonner!','Donnerwetter!','Kopf runter!','Feuer!','Hilfe!','Zu Hülf!', 
+             'Versteck dich!', 'Versteckt euch!','Bleib!','Stopp!'	 
+             , 'Anhalten!','Warte!','Warte.','Fang an.','Mache es!', 'Tue es.', 'Mach weiter.']
+
+
+preds, _ = model.predict_step(
+    data.build(engs, deu), data.num_steps)
+for en, fr, p in zip(engs, deu, preds):
+    translation = []
+    for token in data.tgt_vocab.to_tokens(p):
+        if token == '<eos>':
+            break
+        translation.append(token)
+    print(f'{en} => {translation}, bleu,'
+          f'{bleu(" ".join(translation), fr, k=2):.3f}')
+    

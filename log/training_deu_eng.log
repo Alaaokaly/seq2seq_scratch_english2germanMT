@@ -1,0 +1,148 @@
+2025-05-01 16:23:41,462 - INFO - ======================================================================
+2025-05-01 16:23:41,463 - INFO - TRAINING CONFIGURATION
+2025-05-01 16:23:41,463 - INFO - Source vocabulary size: 1302
+2025-05-01 16:23:41,463 - INFO - Target vocabulary size: 1526
+2025-05-01 16:23:41,463 - INFO - Embedding size: 256, Hidden size: 256
+2025-05-01 16:23:41,463 - INFO - Layers: 5, Dropout: 0.2
+2025-05-01 16:23:41,463 - INFO - Batch size: 128
+2025-05-01 16:23:41,463 - INFO - Learning rate: 0.006
+2025-05-01 16:23:41,463 - INFO - ======================================================================
+2025-05-01 16:23:42,198 - INFO - Using 1 GPU for training
+2025-05-01 16:23:42,285 - INFO - Starting model training...
+2025-05-01 16:23:42,285 - INFO - ==================================================
+2025-05-01 16:23:42,285 - INFO - Starting training for 60 epochs
+2025-05-01 16:23:42,285 - INFO - Training on device: cuda:0
+2025-05-01 16:23:42,285 - INFO - Training set size: 20000 examples
+2025-05-01 16:23:42,285 - INFO - Validation set size: 7001 examples
+2025-05-01 16:23:42,285 - INFO - ==================================================
+2025-05-01 16:23:42,285 - INFO - Epoch 1/60 started
+2025-05-01 16:23:42,286 - INFO - Starting epoch 1/60
+2025-05-01 16:23:42,973 - INFO - Epoch 1: 0/157 batches processed. Current loss: 7.3145
+2025-05-01 16:24:00,372 - INFO - Epoch 1: 100/157 batches processed. Current loss: 4.6128
+2025-05-01 16:24:10,533 - INFO - Epoch 1 completed. Average training loss: 4.9178
+2025-05-01 16:24:19,757 - INFO - Validation  Loss: 12.8559 
+2025-05-01 16:24:19,758 - INFO - Validation loss improved by inf. New best: 12.8559
+2025-05-01 16:24:21,073 - INFO - Model parameters saved to saved_models/model_params.pt
+2025-05-01 16:24:21,073 - INFO - Epoch 1/60 completed in 28.2s - Train Loss: 4.9178, Val Loss: 12.8559
+2025-05-01 16:24:21,073 - INFO - Epoch 2/60 started
+2025-05-01 16:24:21,073 - INFO - Starting epoch 2/60
+2025-05-01 16:24:21,243 - INFO - Epoch 2: 0/157 batches processed. Current loss: 4.3962
+2025-05-01 16:24:40,001 - INFO - Epoch 2: 100/157 batches processed. Current loss: 4.7734
+2025-05-01 16:24:50,356 - INFO - Epoch 2 completed. Average training loss: 4.9907
+2025-05-01 16:24:59,743 - INFO - Validation  Loss: 14.0698 
+2025-05-01 16:24:59,743 - INFO - Epoch 2/60 completed in 29.3s - Train Loss: 4.9907, Val Loss: 14.0698
+2025-05-01 16:24:59,743 - INFO - Epoch 3/60 started
+2025-05-01 16:24:59,743 - INFO - Starting epoch 3/60
+2025-05-01 16:24:59,941 - INFO - Epoch 3: 0/157 batches processed. Current loss: 4.9932
+2025-05-01 16:25:19,126 - INFO - Epoch 3: 100/157 batches processed. Current loss: 4.8688
+2025-05-01 16:25:29,576 - INFO - Epoch 3 completed. Average training loss: 5.0449
+2025-05-01 16:25:39,013 - INFO - Validation  Loss: 15.6264 
+2025-05-01 16:25:39,014 - INFO - Epoch 3/60 completed in 29.8s - Train Loss: 5.0449, Val Loss: 15.6264
+2025-05-01 16:25:39,014 - INFO - Epoch 4/60 started
+2025-05-01 16:25:39,014 - INFO - Starting epoch 4/60
+2025-05-01 16:25:39,205 - INFO - Epoch 4: 0/157 batches processed. Current loss: 5.4729
+2025-05-01 16:25:58,053 - INFO - Epoch 4: 100/157 batches processed. Current loss: 5.3562
+2025-05-01 16:26:08,494 - INFO - Epoch 4 completed. Average training loss: 5.1273
+2025-05-01 16:26:18,091 - INFO - Validation  Loss: 16.4109 
+2025-05-01 16:26:18,091 - INFO - Epoch 4/60 completed in 29.5s - Train Loss: 5.1273, Val Loss: 16.4109
+2025-05-01 16:26:18,091 - INFO - Epoch 5/60 started
+2025-05-01 16:26:18,091 - INFO - Starting epoch 5/60
+2025-05-01 16:26:18,282 - INFO - Epoch 5: 0/157 batches processed. Current loss: 5.7692
+2025-05-01 16:26:37,116 - INFO - Epoch 5: 100/157 batches processed. Current loss: 4.9266
+2025-05-01 16:26:47,554 - INFO - Epoch 5 completed. Average training loss: 5.0742
+2025-05-01 16:26:57,116 - INFO - Validation  Loss: 16.9831 
+2025-05-01 16:26:57,116 - INFO - Epoch 5/60 completed in 29.5s - Train Loss: 5.0742, Val Loss: 16.9831
+2025-05-01 16:26:57,116 - INFO - Epoch 6/60 started
+2025-05-01 16:26:57,117 - INFO - Starting epoch 6/60
+2025-05-01 16:26:57,311 - INFO - Epoch 6: 0/157 batches processed. Current loss: 5.9370
+2025-05-01 16:27:16,415 - INFO - Epoch 6: 100/157 batches processed. Current loss: 4.6653
+2025-05-01 16:27:26,997 - INFO - Epoch 6 completed. Average training loss: 4.9217
+2025-05-01 16:27:36,574 - INFO - Validation  Loss: 16.5784 
+2025-05-01 16:27:36,574 - INFO - Epoch 6/60 completed in 29.9s - Train Loss: 4.9217, Val Loss: 16.5784
+2025-05-01 16:27:36,574 - INFO - Epoch 7/60 started
+2025-05-01 16:27:36,574 - INFO - Starting epoch 7/60
+2025-05-01 16:27:36,768 - INFO - Epoch 7: 0/157 batches processed. Current loss: 5.8186
+2025-05-01 16:27:55,754 - INFO - Epoch 7: 100/157 batches processed. Current loss: 4.5435
+2025-05-01 16:28:06,362 - INFO - Epoch 7 completed. Average training loss: 4.9015
+2025-05-01 16:28:16,075 - INFO - Validation  Loss: 14.4185 
+2025-05-01 16:28:16,075 - INFO - Epoch 7/60 completed in 29.8s - Train Loss: 4.9015, Val Loss: 14.4185
+2025-05-01 16:28:16,075 - INFO - Epoch 8/60 started
+2025-05-01 16:28:16,075 - INFO - Starting epoch 8/60
+2025-05-01 16:28:16,264 - INFO - Epoch 8: 0/157 batches processed. Current loss: 5.0977
+2025-05-01 16:28:35,035 - INFO - Epoch 8: 100/157 batches processed. Current loss: 4.5646
+2025-05-01 16:28:45,775 - INFO - Epoch 8 completed. Average training loss: 4.8684
+2025-05-01 16:28:55,345 - INFO - Validation  Loss: 14.0200 
+2025-05-01 16:28:55,345 - INFO - Epoch 8/60 completed in 29.7s - Train Loss: 4.8684, Val Loss: 14.0200
+2025-05-01 16:28:55,345 - INFO - Epoch 9/60 started
+2025-05-01 16:28:55,345 - INFO - Starting epoch 9/60
+2025-05-01 16:28:55,537 - INFO - Epoch 9: 0/157 batches processed. Current loss: 4.8874
+2025-05-01 16:29:14,394 - INFO - Epoch 9: 100/157 batches processed. Current loss: 5.0425
+2025-05-01 16:29:25,069 - INFO - Epoch 9 completed. Average training loss: 4.9193
+2025-05-01 16:29:34,633 - INFO - Validation  Loss: 13.3188 
+2025-05-01 16:29:34,633 - INFO - Epoch 9/60 completed in 29.7s - Train Loss: 4.9193, Val Loss: 13.3188
+2025-05-01 16:29:34,633 - INFO - Epoch 10/60 started
+2025-05-01 16:29:34,633 - INFO - Starting epoch 10/60
+2025-05-01 16:29:34,826 - INFO - Epoch 10: 0/157 batches processed. Current loss: 4.5295
+2025-05-01 16:29:53,874 - INFO - Epoch 10: 100/157 batches processed. Current loss: 4.7659
+2025-05-01 16:30:04,420 - INFO - Epoch 10 completed. Average training loss: 4.8809
+2025-05-01 16:30:14,846 - INFO - Validation  Loss: 13.4628 
+2025-05-01 16:30:14,846 - INFO - Epoch 10/60 completed in 29.8s - Train Loss: 4.8809, Val Loss: 13.4628
+2025-05-01 16:30:14,846 - INFO - Epoch 11/60 started
+2025-05-01 16:30:14,846 - INFO - Starting epoch 11/60
+2025-05-01 16:30:15,040 - INFO - Epoch 11: 0/157 batches processed. Current loss: 4.7184
+2025-05-01 16:30:34,370 - INFO - Epoch 11: 100/157 batches processed. Current loss: 5.2312
+2025-05-01 16:30:45,069 - INFO - Epoch 11 completed. Average training loss: 4.8506
+2025-05-01 16:30:54,555 - INFO - Validation  Loss: 13.4309 
+2025-05-01 16:30:54,555 - INFO - Epoch 11/60 completed in 30.2s - Train Loss: 4.8506, Val Loss: 13.4309
+2025-05-01 16:30:54,555 - INFO - Epoch 12/60 started
+2025-05-01 16:30:54,555 - INFO - Starting epoch 12/60
+2025-05-01 16:30:54,743 - INFO - Epoch 12: 0/157 batches processed. Current loss: 4.6992
+2025-05-01 16:31:13,701 - INFO - Epoch 12: 100/157 batches processed. Current loss: 4.8452
+2025-05-01 16:31:24,168 - INFO - Epoch 12 completed. Average training loss: 4.8835
+2025-05-01 16:31:33,596 - INFO - Validation  Loss: 14.1601 
+2025-05-01 16:31:33,596 - INFO - Epoch 12/60 completed in 29.6s - Train Loss: 4.8835, Val Loss: 14.1601
+2025-05-01 16:31:33,596 - INFO - Epoch 13/60 started
+2025-05-01 16:31:33,597 - INFO - Starting epoch 13/60
+2025-05-01 16:31:33,787 - INFO - Epoch 13: 0/157 batches processed. Current loss: 4.8532
+2025-05-01 16:31:53,082 - INFO - Epoch 13: 100/157 batches processed. Current loss: 4.7796
+2025-05-01 16:32:03,937 - INFO - Epoch 13 completed. Average training loss: 4.8754
+2025-05-01 16:32:14,052 - INFO - Validation  Loss: 13.8767 
+2025-05-01 16:32:14,052 - INFO - Epoch 13/60 completed in 30.3s - Train Loss: 4.8754, Val Loss: 13.8767
+2025-05-01 16:32:14,052 - INFO - Epoch 14/60 started
+2025-05-01 16:32:14,052 - INFO - Starting epoch 14/60
+2025-05-01 16:32:14,244 - INFO - Epoch 14: 0/157 batches processed. Current loss: 4.8559
+2025-05-01 16:32:33,737 - INFO - Epoch 14: 100/157 batches processed. Current loss: 4.4610
+2025-05-01 16:32:44,184 - INFO - Epoch 14 completed. Average training loss: 4.8529
+2025-05-01 16:32:53,595 - INFO - Validation  Loss: 13.9907 
+2025-05-01 16:32:53,595 - INFO - Epoch 14/60 completed in 30.1s - Train Loss: 4.8529, Val Loss: 13.9907
+2025-05-01 16:32:53,595 - INFO - Epoch 15/60 started
+2025-05-01 16:32:53,595 - INFO - Starting epoch 15/60
+2025-05-01 16:32:53,785 - INFO - Epoch 15: 0/157 batches processed. Current loss: 4.9180
+2025-05-01 16:33:12,600 - INFO - Epoch 15: 100/157 batches processed. Current loss: 4.8498
+2025-05-01 16:33:23,021 - INFO - Epoch 15 completed. Average training loss: 4.8489
+2025-05-01 16:33:32,768 - INFO - Validation  Loss: 14.0918 
+2025-05-01 16:33:32,768 - INFO - Epoch 15/60 completed in 29.4s - Train Loss: 4.8489, Val Loss: 14.0918
+2025-05-01 16:33:32,768 - INFO - Epoch 16/60 started
+2025-05-01 16:33:32,768 - INFO - Starting epoch 16/60
+2025-05-01 16:33:32,955 - INFO - Epoch 16: 0/157 batches processed. Current loss: 4.9369
+2025-05-01 16:33:51,775 - INFO - Epoch 16: 100/157 batches processed. Current loss: 4.6416
+2025-05-01 16:34:02,365 - INFO - Epoch 16 completed. Average training loss: 4.8439
+2025-05-01 16:34:11,870 - INFO - Validation  Loss: 13.1410 
+2025-05-01 16:34:11,871 - INFO - Epoch 16/60 completed in 29.6s - Train Loss: 4.8439, Val Loss: 13.1410
+2025-05-01 16:34:11,871 - INFO - Epoch 17/60 started
+2025-05-01 16:34:11,871 - INFO - Starting epoch 17/60
+2025-05-01 16:34:12,058 - INFO - Epoch 17: 0/157 batches processed. Current loss: 4.7549
+2025-05-01 16:34:30,847 - INFO - Epoch 17: 100/157 batches processed. Current loss: 4.6355
+2025-05-01 16:34:41,200 - INFO - Epoch 17 completed. Average training loss: 4.8625
+2025-05-01 16:34:50,487 - INFO - Validation  Loss: 13.2541 
+2025-05-01 16:34:50,487 - INFO - Epoch 17/60 completed in 29.3s - Train Loss: 4.8625, Val Loss: 13.2541
+2025-05-01 16:34:50,487 - INFO - Epoch 18/60 started
+2025-05-01 16:34:50,487 - INFO - Starting epoch 18/60
+2025-05-01 16:34:50,674 - INFO - Epoch 18: 0/157 batches processed. Current loss: 4.6078
+2025-05-01 16:35:09,427 - INFO - Epoch 18: 100/157 batches processed. Current loss: 4.9864
+2025-05-01 16:35:19,778 - INFO - Epoch 18 completed. Average training loss: 4.8729
+2025-05-01 16:35:29,144 - INFO - Validation  Loss: 13.3369 
+2025-05-01 16:35:29,144 - INFO - Epoch 18/60 completed in 29.3s - Train Loss: 4.8729, Val Loss: 13.3369
+2025-05-01 16:35:29,144 - INFO - Epoch 19/60 started
+2025-05-01 16:35:29,144 - INFO - Starting epoch 19/60
+2025-05-01 16:35:29,333 - INFO - Epoch 19: 0/157 batches processed. Current loss: 4.7161
